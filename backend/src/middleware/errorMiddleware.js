@@ -15,13 +15,6 @@ export const errorHandler = (err, req, res, next) => {
         message = "Ressource introuvable.";
     }
 
-    if (req.file) {
-        fs.unlink(req.file.path, (err) => {
-            err
-                ? console.log("Error occurred : " + err)
-                : console.log("File deleted due to an error.");
-        });
-    }
 
     res.status(statusCode).json({
         message,
