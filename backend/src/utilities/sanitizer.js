@@ -1,4 +1,3 @@
-
 export const sanitizer = (data) => {
     if (typeof data !== "object" || Object.keys(data).length === 0) {
         throw new Error("Please provide a non-empty object for sanitization.");
@@ -11,19 +10,16 @@ export const sanitizer = (data) => {
             SanitizedData[key] = sanitizer(data[key]);
         } else {
             // Escape characters for CSRF protection and apply custom trimming
-            if( typeof data[key] === "string"){
-                SanitizedData[key] = sanitizeHtml(data[key]).customTrim(); 
+            if (typeof data[key] === "string") {
+                SanitizedData[key] = sanitizeHtml(data[key]).customTrim();
             }
-                  
         }
     });
 
     return SanitizedData;
 };
 
-
-function sanitizeHtml (string) {
-    console.log(string)
-    return  string.replace(/(<([^>]+)>)/gi, "");
+function sanitizeHtml(string) {
+    console.log(string);
+    return string.replace(/(<([^>]+)>)/gi, "");
 }
-

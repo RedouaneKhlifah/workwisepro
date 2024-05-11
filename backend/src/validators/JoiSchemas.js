@@ -15,35 +15,31 @@ const customErrorMessages = {
     "number.base": "must be a valid number."
 };
 
- const validator = (schema, data) => {
-
+const validator = (schema, data) => {
     const { error } = schema.validate(data, {
         abortEarly: false,
         allowUnknown: true
     });
 
     if (error) {
-        const errors = error.details.map(
-            (detail) => {
-                const field = detail.path
-                    ? Array.isArray(detail.path) && detail.path.length > 1
-                        ? detail.path[1]?.toString()
-                        : detail.path[0]?.toString()
-                    : undefined;
+        const errors = error.details.map((detail) => {
+            const field = detail.path
+                ? Array.isArray(detail.path) && detail.path.length > 1
+                    ? detail.path[1]?.toString()
+                    : detail.path[0]?.toString()
+                : undefined;
 
-                const errorMessage =
-                    customErrorMessages[detail.type] || detail.message;
+            const errorMessage =
+                customErrorMessages[detail.type] || detail.message;
 
-                return {
-                    field: field || "",
-                    message: field + " " + errorMessage
-                };
-            }
-        );
+            return {
+                field: field || "",
+                message: field + " " + errorMessage
+            };
+        });
         return errors;
     }
-    return null
-
+    return null;
 };
 
-export default validator
+export default validator;
