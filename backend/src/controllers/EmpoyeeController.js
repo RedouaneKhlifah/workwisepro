@@ -1,10 +1,11 @@
 import asyncHandler from "express-async-handler";
-import Employee from "../models/employee";
+import Employee from "../models/EmployeeModel";
 import validator from "../validators/JoiSchemas";
 import employeeSchemas from "../validators/EmployeeSchema";
 import UserServices from "../services/UserServices";
 import EmployeeServices from "../services/EmployeeServices";
 import { sanitizer } from "../utilities/sanitizer";
+import UtilsServices from "../services/Utils";
 
 export const createEmployee = asyncHandler(async (req, res) => {
     const { email } = req.body?.userInfo;
@@ -21,49 +22,43 @@ export const createEmployee = asyncHandler(async (req, res) => {
     await UserServices.ensureUniqueEmail(email);
 
     const SanitizedData = sanitizer(req.body);
-
-    const { userInfo, personalInfo, professionalInfo } = SanitizedData;
-
-    const { user } = await UserServices.registerUser(userInfo);
-
-    const employeeData = {
-        user_id: user._id,
-        personalInfo: {
-            FullName: `${user.Prénom} ${user.Nom}`,
-            ...personalInfo
-        },
-        professionalInfo
-    };
-
-    const employee = await EmployeeServices.insertNewEmployee(employeeData);
+    const employee = await EmployeeServices.insertEmployeetranstction({
+        ...SanitizedData,
+        companyId: req.user._id
+    });
 
     res.status(201).json(employee);
 });
 
 const fetchEmployees = asyncHandler(async (req, res) => {
     const page = parseInt(req.query?.page) - 1 || 0;
+    const defaultSearch = "personalInfo.FullName";
     const search = req.query?.search || "";
     const sort = req.query?.sort || "FullName";
     const sortOrder = req.query?.order === "desc" ? -1 : 1;
 
-    const sortBy = {};
-    sortBy[`personalInfo.${sort}`] = sortOrder;
+    const userId = req?.user?._id;
 
-    const query = {};
-    if (search) {
-        query["personalInfo.FullName"] = { $regex: search, $options: "i" };
-    }
+    const filterdData = {
+        page,
+        search,
+        sort: `personalInfo.${sort}`,
+        sortOrder,
+        defaultSearch
+    };
 
-    const employeesPerPage = 12;
+    const { sortBy, skip, PerPage, query } =
+        UtilsServices.SortSearch(filterdData);
 
-    const skip = page * employeesPerPage;
-
-    const employees = await Employee.find(query)
+    const employees = await Employee.find({
+        ...query,
+        userId
+    })
         .sort(sortBy)
         .skip(skip)
-        .limit(employeesPerPage);
+        .limit(PerPage);
 
-    const rowCount = await Employee.countDocuments(query);
+    const rowCount = await Employee.countDocuments({ query });
 
     res.status(200).json({ data: employees, rowCount });
 });

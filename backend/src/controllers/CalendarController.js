@@ -4,8 +4,6 @@ import calendarSchema from "../validators/CalendarSchema.js";
 import validator from "../validators/JoiSchemas.js";
 
 const fetchCalendar = asynchandler(async (req, res) => {
-    console.log(req.user._id);
-    console.log("test");
     const CalendarDates = await Calendar.find({ userId: req.user._id });
     res.json(CalendarDates);
 });
