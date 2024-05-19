@@ -11,8 +11,9 @@ const fetchCompetences = asynchandler(async (req, res) => {
     const page = parseInt(req.query?.page) - 1 || 0;
     const defaultSearch = "titre";
     const search = req.query?.search || "";
-    const sort = req.query?.sort || "defaultSearch";
+    const sort = req.query?.sort || defaultSearch;
     const sortOrder = req.query?.order === "desc" ? -1 : 1;
+    const companyId = req.user._id;
 
     const filterdData = {
         page,
@@ -25,12 +26,12 @@ const fetchCompetences = asynchandler(async (req, res) => {
     const { sortBy, skip, PerPage, query } =
         UtilsServices.SortSearch(filterdData);
 
-    const competences = await Competence.find(query)
+    const competences = await Competence.find({ ...query, companyId })
         .sort(sortBy)
         .skip(skip)
         .limit(PerPage);
 
-    const rowCount = await Competence.countDocuments({ query });
+    const rowCount = await Competence.countDocuments({ query, companyId });
 
     res.status(200).json({ data: competences, rowCount });
 });
@@ -38,7 +39,12 @@ const fetchCompetences = asynchandler(async (req, res) => {
 // Get specific Competence
 const fetchCompetenceById = asynchandler(async (req, res) => {
     const competenceId = req.params.id;
-    const foundCompetence = await Competence.findById(competenceId);
+    const companyId = req.user._id;
+
+    const foundCompetence = await Competence.findById({
+        _id: competenceId,
+        companyId
+    });
     if (!foundCompetence) {
         return res.status(400).json({
             message: "Competence not exist"
@@ -50,6 +56,7 @@ const fetchCompetenceById = asynchandler(async (req, res) => {
 // Create a new Competence
 const createCompetence = asynchandler(async (req, res) => {
     const { titre, typeDeSavoire } = req.body;
+    const companyId = req.user._id;
 
     const data = {
         titre,
@@ -66,7 +73,7 @@ const createCompetence = asynchandler(async (req, res) => {
         return;
     }
 
-    const foundCompetence = await Competence.findOne({ titre });
+    const foundCompetence = await Competence.findOne({ titre, companyId });
 
     if (foundCompetence) {
         return res.status(400).json({
@@ -76,10 +83,9 @@ const createCompetence = asynchandler(async (req, res) => {
 
     const SanitizedData = sanitizer(data);
 
-    const userId = req.user._id;
     const savedCompetence = await Competence.create({
         ...SanitizedData,
-        userId
+        companyId
     });
 
     res.status(201).json(savedCompetence);
@@ -89,6 +95,7 @@ const createCompetence = asynchandler(async (req, res) => {
 const updateCompetence = asynchandler(async (req, res) => {
     const competenceId = req.params.id;
     const { titre, typeDeSavoire } = req.body;
+    const companyId = req.user._id;
 
     const data = {
         titre,
@@ -105,18 +112,17 @@ const updateCompetence = asynchandler(async (req, res) => {
         return;
     }
 
-    const theCompetence = await Competence.findById(competenceId);
-
-    if (!theCompetence) {
+    const foundCompetence = await Competence.findById({
+        _id: competenceId,
+        companyId
+    });
+    if (!foundCompetence) {
         return res.status(400).json({
             message: "Competence not exist"
         });
     }
 
     const SanitizedData = sanitizer(data);
-
-    console.log("SanitizedData");
-    console.log(SanitizedData);
 
     const updatedCompetence = await Competence.findByIdAndUpdate(
         competenceId,
@@ -130,15 +136,22 @@ const updateCompetence = asynchandler(async (req, res) => {
 // Delete a competence
 const deleteCompetence = asynchandler(async (req, res) => {
     const competenceId = req.params.id;
-    const body = req.body;
-    const foundCompetence = await Competence.findById(competenceId);
-    console.log(body, foundCompetence);
+    const companyId = req.user._id;
+
+    const foundCompetence = await Competence.findById({
+        _id: competenceId,
+        companyId
+    });
+
     if (!foundCompetence) {
         return res.status(400).json({
             message: "Competence not exist"
         });
     }
-    const deletedCompetence = await Competence.findByIdAndDelete(competenceId);
+    const deletedCompetence = await Competence.findById({
+        _id: competenceId,
+        companyId
+    });
     res.json(`${deletedCompetence.titre} got succufuly Deleted`);
 });
 

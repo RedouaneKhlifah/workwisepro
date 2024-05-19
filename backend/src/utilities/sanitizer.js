@@ -20,6 +20,5 @@ export const sanitizer = (data) => {
 };
 
 function sanitizeHtml(string) {
-    console.log(string);
     return string.replace(/(<([^>]+)>)/gi, "");
 }

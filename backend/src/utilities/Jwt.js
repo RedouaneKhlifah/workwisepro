@@ -8,8 +8,6 @@ const accessTokenGenerator = (userId) => {
 };
 
 const StoreTokenInCockies = (res,token)=>{
-    console.log("token")
-    console.log(token)
     res.cookie("jwt-token", token, {
         httpOnly: true, // The cookie cannot be accessed by client-side JavaScript.
         secure: process.env.NODE_ENV !== "development",

@@ -18,7 +18,12 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 // CORS & EJS
-app.use(cors());
+app.use(
+    cors({
+        credentials: true,
+        origin: true
+    })
+);
 
 // Using the cookie-parser middleware to parse cookies from incoming requests
 app.use(cookieParser());

@@ -1,23 +1,26 @@
 import Employee from "../models/EmployeeModel";
-import { getDb } from "../config/SingleTone";
 import UserServices from "../services/UserServices";
 import mongoose from "mongoose";
 
-const insertNewEmployee = async (employeeData) => {
+const insertNewEmployee = async (employeeData, session) => {
     const employee = new Employee(employeeData);
-    await employee.save();
+    await employee.save({ session });
     return employee;
 };
 
 const insertEmployeetranstction = async (data) => {
-    const { userInfo, personalInfo, professionalInfo, companyId } = data;
+    const { userInfo, personalInfo, professionalInfo, emplois, companyId } =
+        data;
 
     // const db = getDb();
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
-        const { user } = await UserServices.registerUser(userInfo);
+        const { user } = await UserServices.registerUser(userInfo, session);
+
+        console.log("emplois");
+        console.log(emplois);
 
         const employeeData = {
             userId: user._id,
@@ -26,7 +29,8 @@ const insertEmployeetranstction = async (data) => {
                 FullName: `${user.firstName} ${user.lastName}`,
                 ...personalInfo
             },
-            professionalInfo
+            professionalInfo,
+            emplois
         };
 
         // Pass the session to the insertNewEmployee function

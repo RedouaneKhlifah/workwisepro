@@ -4,6 +4,7 @@ import userSchemas from "../validators/UserSchema";
 import JwtServices from "../utilities/Jwt";
 import validator from "../validators/JoiSchemas";
 import storeProfilePictureLocally from "../utilities/storeProfilePictureLocally";
+
 /**
  * @desc Auth user & set token
  * @route POST /api/user/auth
@@ -73,4 +74,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     JwtServices.StoreTokenInCockies(res, accessToken);
 
     res.status(201).json(user);
+});
+
+export const getUserProfile = asyncHandler(async (req, res) => {
+    res.status(200).json(req.user);
 });

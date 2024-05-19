@@ -1,16 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
+
+export const GlobalVariables = React.createContext();
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [backendURL, setBackendURL] = useState("http://localhost:5000/");
 
-  return (
-    <>
-    <Test/>
-    </>
-  )
+    return (
+        <>
+            <GlobalVariables.Provider value={{ backendURL, setBackendURL }}>
+                <Outlet />
+                <ToastContainer />
+            </GlobalVariables.Provider>
+        </>
+    );
 }
 
-export default App
+export default App;

@@ -1,5 +1,6 @@
 const SortSearch = (data) => {
     const sortBy = {};
+
     sortBy[`${data.sort}`] = data.sortOrder;
 
     const query = {};

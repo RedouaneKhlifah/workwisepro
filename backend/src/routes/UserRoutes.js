@@ -1,6 +1,11 @@
 import { Router } from "express";
-import { registerUser, authUser } from "../controllers/UserController";
+import {
+    registerUser,
+    authUser,
+    getUserProfile
+} from "../controllers/UserController";
 import MulterUpload from "../utilities/multer";
+import authMiddleware from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -10,5 +15,7 @@ router.post(
     registerUser
 );
 router.post("/auth/login", authUser);
+
+router.get("/profile", authMiddleware, getUserProfile);
 
 export default router;

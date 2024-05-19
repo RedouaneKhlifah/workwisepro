@@ -3,9 +3,9 @@ import JwtServices from "../utilities/Jwt";
 import { userResponse } from "../responce/userResponse";
 import { checkPasswordCorrcet, hasher } from "../utilities/Hash";
 
-const createUser = async (userData) => {
+const createUser = async (userData, session) => {
     const newUser = new User(userData);
-    await newUser.save();
+    await newUser.save({ session });
     return newUser;
 };
 
@@ -18,11 +18,14 @@ export const ensureUniqueEmail = async (email) => {
 
 // Register new user
 
-const registerUser = async (userData) => {
-    const newUser = await createUser({
-        ...userData,
-        password: await hasher(userData.password)
-    });
+const registerUser = async (userData, session) => {
+    const newUser = await createUser(
+        {
+            ...userData,
+            password: await hasher(userData.password)
+        },
+        session
+    );
     const accessToken = JwtServices.accessTokenGenerator(newUser._id);
     return { user: newUser, accessToken };
 };

@@ -58,6 +58,11 @@ const employeeSchema = mongoose.Schema({
             trim: true,
             required: true
         },
+        Grade: {
+            type: String,
+            trim: true,
+            required: true
+        },
         Catégorie: {
             type: String,
             trim: true,
@@ -88,7 +93,7 @@ const employeeSchema = mongoose.Schema({
             required: true
         }
     },
-    skills: [
+    competences: [
         {
             competence_id: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -102,15 +107,18 @@ const employeeSchema = mongoose.Schema({
             }
         }
     ],
-    jobs: [
+    emplois: [
         {
             emploi_id: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "emploi",
-                required: true
+                ref: "emploi"
+            },
+            Niveau: {
+                type: Number
             }
         }
-    ]
+    ],
+    createdAt: { type: Date, default: Date.now }
 });
 
 // Creating a new User model using the userSchema

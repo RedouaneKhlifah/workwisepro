@@ -1,21 +1,31 @@
-const SortCompetence = (data) => {
-    const sortBy = {};
-    sortBy[`${data.sort}`] = data.sortOrder;
+import Competence from "../models/CompetenceModel";
 
-    const query = {};
-    if (data.search) {
-        query.titre = { $regex: data.search, $options: "i" };
-    }
+const CompetenceValidator = async (data) => {
+    const { competences, companyId } = data;
 
-    const PerPage = 12;
+    const ValidCompétences = await Promise.all(
+        competences.map(async (competence) => {
+            // Find the competence by its competence_id
+            const existingCompetence = await Competence.findOne({
+                _id: competence.competence_id,
+                companyId
+            });
 
-    const skip = data.page * PerPage;
-
-    return { sortBy, skip, data };
+            if (existingCompetence) {
+                return {
+                    competence_id: competence.competence_id,
+                    Niveau: competence.Niveau
+                };
+            } else {
+                return null;
+            }
+        })
+    );
+    return ValidCompétences.filter((competence) => competence !== null);
 };
 
-const CompetenceServices = {
-    SortCompetence
+const competenceServices = {
+    CompetenceValidator
 };
 
-export default CompetenceServices;
+export default competenceServices;
