@@ -6,7 +6,7 @@ import axios from "axios";
 import { Card, Input } from "@material-tailwind/react";
 import ChipDismissible from "../utils/ChipDismissible";
 import { toast } from "react-toastify";
-import { useDispatch ,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setModelessCompetences } from "../../slices/competenceSlice";
 import AutocompleteInpute from "../ui/autocompleteInpute";
 
@@ -16,25 +16,26 @@ function Modal({
     Inputes,
     name = "",
     className,
-    icon
+    icon,
+    modalTitle
 }) {
-
-    const dispatch  = useDispatch();
-    const modlessCompetence = useSelector((state)=>state.competence.ModelessCompetences);
+    const dispatch = useDispatch();
+    const modlessCompetence = useSelector(
+        (state) => state.competence.ModelessCompetences
+    );
     // show modal
     const [open, setOpen] = useState(false);
     const modal = () => {
         setOpen(!open);
     };
 
-
-
     // get modelsss competence and store it in state redux
-    const autocompleteUrl = "http://localhost:5000/api/competence/modelessCompetences";
+    const autocompleteUrl =
+        "http://localhost:5000/api/competence/modelessCompetences";
     const CompetenceslessModule = async () => {
         try {
             const res = await axios.get(autocompleteUrl);
-            dispatch(setModelessCompetences(res.data))
+            dispatch(setModelessCompetences(res.data));
         } catch (error) {}
     };
     useEffect(() => {
@@ -54,7 +55,7 @@ function Modal({
                 competences: selectedCompetences
             };
 
-            // clean up 
+            // clean up
             const response = await axios.post(url, moduledata);
             setCompetenceInputeVal("");
             setForm({});
@@ -87,9 +88,11 @@ function Modal({
         let value = competenceInputeVal?.toLowerCase();
         if (value) {
             // filter the payload from already selected Competence
-            const filteredAutocomplete = modlessCompetence.filter((Competence) => {
-                return Competence.titre.toLowerCase().includes(value);
-            });
+            const filteredAutocomplete = modlessCompetence.filter(
+                (Competence) => {
+                    return Competence.titre.toLowerCase().includes(value);
+                }
+            );
             return setAutocomplete(filteredAutocomplete);
         } else {
             // If the input value is empty, set the autocomplete to the modlessCompetence
@@ -116,7 +119,7 @@ function Modal({
             (competence) => competenceId !== competence._id
         );
 
-       dispatch(setModelessCompetences(filteredAutocomplete))
+        dispatch(setModelessCompetences(filteredAutocomplete));
 
         // set CompetenceInputeVal to none
         setCompetenceInputeVal("");
@@ -130,7 +133,9 @@ function Modal({
         );
 
         // return remove Selected Competence to modlessCompetence
-        dispatch(setModelessCompetences([...modlessCompetence, removedCompetence]))
+        dispatch(
+            setModelessCompetences([...modlessCompetence, removedCompetence])
+        );
 
         // filter selected competence from removed Competence
         setSelectedCompetences((prevSelectedCompetences) =>
@@ -140,7 +145,6 @@ function Modal({
         );
     };
 
-
     return (
         <>
             <ANEPBtn
@@ -148,6 +152,7 @@ function Modal({
                 name={name}
                 onClick={modal}
                 className={className}
+                color="blue"
             />
             <Transition.Root show={open} as={Fragment}>
                 <Dialog
@@ -188,7 +193,7 @@ function Modal({
                                 {/* title of module */}
                                 <div className="my-1 ">
                                     <h1 className="text-start text-anep-primary text-base md:text-lg font-cairo font-extrabold  normal-case border-b-2 pb-2 pl-6">
-                                        Ajouter un nouveau module
+                                        {modalTitle}
                                     </h1>
                                 </div>
                                 {/* the body */}
@@ -198,12 +203,12 @@ function Modal({
                                             {/* titre inpute */}
                                             <div
                                                 className={`grid ${
-                                                    inputes.length > 1
+                                                    inputes?.length > 1
                                                         ? "grid-cols-2 gap-4"
                                                         : ""
                                                 }`}
                                             >
-                                                {inputes.map((input) => {
+                                                {inputes?.map((input) => {
                                                     return (
                                                         <React.Fragment
                                                             key={input}
@@ -232,11 +237,24 @@ function Modal({
                                                     );
                                                 })}
                                             </div>
-                                                
+
                                             {/* competence  */}
                                             {autocompleteInpute && (
                                                 <div className="relative pt-4">
-                                                <AutocompleteInpute autocomplete = {autocomplete}setCompetenceInputeVal = {setCompetenceInputeVal} competenceInputeVal = {competenceInputeVal} addCompetence = {addCompetence}/>
+                                                    <AutocompleteInpute
+                                                        autocomplete={
+                                                            autocomplete
+                                                        }
+                                                        setCompetenceInputeVal={
+                                                            setCompetenceInputeVal
+                                                        }
+                                                        competenceInputeVal={
+                                                            competenceInputeVal
+                                                        }
+                                                        addCompetence={
+                                                            addCompetence
+                                                        }
+                                                    />
                                                 </div>
                                             )}
                                         </div>
@@ -258,7 +276,7 @@ function Modal({
                                             )
                                         )}
                                     </div>
-                                  
+
                                     {/* the buttons  */}
                                     <div className=" mt-5 sm:mt-6 flex flex-row gap-x-4 justify-center ">
                                         <ANEPBtn

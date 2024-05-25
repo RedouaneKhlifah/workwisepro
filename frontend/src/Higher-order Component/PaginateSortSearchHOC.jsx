@@ -6,13 +6,13 @@ import NavFilter from "../components/NavFilter";
 import CardEmploiSkelton from "../skilton/emploi/CardEmploiSkelton";
 import { GlobalVariables } from "../App";
 
-function PaginateSortSearchHOC({ url, Component, sortOptions }) {
+function PaginateSortSearchHOC({ url, Component, sortOptions, ModalBtn }) {
     const { backendURL } = useContext(GlobalVariables);
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPageCount, setTotalPageCount] = useState([]);
+    const [totalPageCount, setTotalPageCount] = useState(0);
     const [error, setError] = useState(null);
 
     const [searchSortData, setSearchSortData] = useState({
@@ -37,6 +37,7 @@ function PaginateSortSearchHOC({ url, Component, sortOptions }) {
                 const resData = response.data;
                 setData(resData.data);
                 setTotalPageCount(Math.ceil(resData.rowCount / 12));
+                console.log(totalPageCount);
                 setIsLoading(false);
                 setError(null);
             } catch (err) {
@@ -56,6 +57,7 @@ function PaginateSortSearchHOC({ url, Component, sortOptions }) {
                     <NavFilter
                         sortOptions={sortOptions}
                         sendSortSearchDataToParent={setSearchSortData}
+                        ModalBtn={ModalBtn}
                     />
                 </div>
                 {isLoading ? (
@@ -76,12 +78,15 @@ function PaginateSortSearchHOC({ url, Component, sortOptions }) {
                     <Component data={data} />
                 )}
             </div>
-            <Pagination
-                data={data}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                totalPageCount={totalPageCount}
-            />
+
+            {totalPageCount > 1 && (
+                <Pagination
+                    data={data}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    totalPageCount={totalPageCount}
+                />
+            )}
         </>
     );
 }

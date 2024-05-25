@@ -16,8 +16,18 @@ function Sidebar() {
         }
     };
     const SidebarButtons = [
-        { link: "/", title: "Accueil", icon: "material-symbols:home", state: show },
-        { link: "/emplois", title: "Emplois", icon: "material-symbols:work", state: show },
+        {
+            link: "/",
+            title: "Accueil",
+            icon: "material-symbols:home",
+            state: show
+        },
+        {
+            link: "/emplois",
+            title: "Emplois",
+            icon: "material-symbols:work",
+            state: show
+        },
         {
             link: "employees",
             title: "Employées",
@@ -29,8 +39,7 @@ function Sidebar() {
             title: "Compétences",
             icon: "material-symbols:assignment-outline",
             state: show
-        },
-        { link: "modules", title: "Modules", icon: "material-symbols:library-books-outline", state: show }
+        }
     ];
 
     return (
@@ -39,8 +48,8 @@ function Sidebar() {
                 ref={container}
                 className="sticky top-3 w-52 bg-anep-secondary rounded-xl transition-all duration-500"
             >
-                {/* anep image */}
-                <SidebarAnepIcon state={show} />
+                {/*  image */}
+                <div className="font-bold text-center pt-4 ">Company Logo</div>
 
                 {/* arrow icon */}
                 <i
@@ -49,7 +58,10 @@ function Sidebar() {
                         show ? "rotate-180" : "rotate-0"
                     } transition-all duration-500`}
                 >
-                    <Icon icon="material-symbols:arrow-forward-ios-rounded" className="translate-x-0.5" />
+                    <Icon
+                        icon="material-symbols:arrow-forward-ios-rounded"
+                        className="translate-x-0.5"
+                    />
                 </i>
 
                 {/* links */}

@@ -36,12 +36,6 @@ function Accueil() {
                     title="Nombre Total de Compétences"
                     number="300"
                 />
-                <BoxStatus
-                    bgColor={"bg-gradient-to-r from-orange-400 to-orange-600"}
-                    icon={icons.pieChart}
-                    title="Nombre Total de Modules"
-                    number="300"
-                />
             </div>
             <Schedule setOpen={setOpen} setForm={setForm} />
             <ScheduleModel

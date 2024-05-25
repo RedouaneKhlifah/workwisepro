@@ -1,15 +1,27 @@
-import React from "react";
 import CompetanceTable from "../../../components/CompetenceTable";
+import PaginateSortSearchHOC from "../../../Higher-order Component/PaginateSortSearchHOC";
+import Modal from "../../../components/modals/Modal";
 
-import { useState } from "react";
-import ANEPBtn from "../../../components/utils/ANEPBtn";
-import ModalBtn from "../../../components/ModalBtn";
+const sortOptions = [
+    { name: "Titre (asc)", value: "Titre" },
+    { name: "Formation (asc)", value: "Formation" },
+    { name: "Spécialité (asc)", value: "Spécialité" }
+];
 
 function CompetenceHome() {
     return (
-        <div>
-            <CompetanceTable />
-        </div>
+        <PaginateSortSearchHOC
+            url="api/competence"
+            Component={CompetanceTable}
+            sortOptions={sortOptions}
+            ModalBtn={
+                <Modal
+                    modalTitle="ajouter de nouveaux compétence"
+                    name="ajouter de nouveaux compétence"
+                    className="pointer-events-auto"
+                />
+            }
+        />
     );
 }
 

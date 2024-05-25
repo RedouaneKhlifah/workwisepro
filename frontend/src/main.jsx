@@ -32,7 +32,6 @@ import ForgotPassword from "./views/ForgotPassword.jsx";
 // loaders
 import { fetchCompetences } from "./loaders/Competences.js";
 import { fetchModules } from "./loaders/Modules.js";
-import { fetchEmploi } from "./loaders/Emplois.js";
 // import EmploiDetails, {
 //     emploiDetailsLoader
 // }  from "./views/children/employees/EmploiDetails.jsx";

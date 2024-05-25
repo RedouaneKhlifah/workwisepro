@@ -1,5 +1,6 @@
 import PaginateSortSearchHOC from "../../../Higher-order Component/PaginateSortSearchHOC";
 import EmploisSection from "./EmploisSection";
+import Modal from "../../../components/modals/Modal";
 
 // sort options
 const sortOptions = [
@@ -14,6 +15,13 @@ function EmploiHome() {
             url="api/emploi"
             Component={EmploisSection}
             sortOptions={sortOptions}
+            ModalBtn={
+                <Modal
+                    modalTitle="ajouter de nouveaux emploi"
+                    name="ajouter de nouveaux emploi"
+                    className="pointer-events-auto"
+                />
+            }
         />
     );
 }
